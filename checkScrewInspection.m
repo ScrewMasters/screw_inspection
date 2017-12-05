@@ -52,11 +52,15 @@ result = ScrewInspection(strcat('../screws_images_2/screw3_',num2str(i),'.jpg'))
 result_normal3{i}=result;
 end
 
+%%
 result_normal4= cell(24,1);
+figure;
 for i = 1:24
-result = ScrewInspection(strcat('../screws_images_2/screw4_',num2str(i),'.jpg'));
+result = ScrewInspection(strcat('../screws_images_2/screw4_',num2str(i),'.jpg'), true);
+waitforbuttonpress;
 result_normal4{i}=result;
 end
+%%
 
 result_tissue= cell(24,1);
 for i = 1:24

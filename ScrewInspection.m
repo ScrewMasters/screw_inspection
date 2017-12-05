@@ -24,6 +24,7 @@ function [result] = ScrewInspection(imgpath, visualization)
       figure;
       subplot(2, 3, 1);
       imshow(img);
+      title(['Original Image']);
     end
 
     [line,im_patch,bw_patch] = findScrew(img);
@@ -96,7 +97,8 @@ function [result] = ScrewInspection(imgpath, visualization)
       imshow(bw_patch);
       hold on;
       plot(contour(:,1), contour(:,2), 'LineWidth', 2, 'Color', 'g');
-      xlabel({['length: ', num2str(length_scale)],['width: ', num2str(width_scale)]});
+      xlabel({['Length: ', num2str(length_scale), ' [std: ',num2str(length_std),'+/-', num2str(length_thr),']'],['Width: ', num2str(width_scale), ' [std: ', num2str(width_std), '+/-', num2str(width_thr),']']});
+      title(['Contour']);
     end
 
     % check screw head
@@ -104,9 +106,11 @@ function [result] = ScrewInspection(imgpath, visualization)
     [bound_head] = extractBoundary(bw_head);
 
     head_area = polyarea(bound_head(:,2),bound_head(:,1));
-    if head_area>1200
+    big_head_thr = 1200;
+    small_head_thr = 900;
+    if head_area>big_head_thr
       result.head = 'too big';
-    elseif head_area<900
+    elseif head_area<small_head_thr
       result.head = 'too small';
     else
       result.head = 'good';
@@ -117,7 +121,8 @@ function [result] = ScrewInspection(imgpath, visualization)
       imshow(bw_head);
       hold on;
       plot(bound_head(:,2), bound_head(:,1), 'LineWidth', 2, 'Color', 'g');
-      xlabel({['head area: ', num2str(head_area)]; ['result: ', result.head]});
+      xlabel(['Head area: ', num2str(head_area), ' [std: ', num2str(small_head_thr), '~', num2str(big_head_thr), ']']);
+      title(['Head Profile']);
     end
 
     % check screw thread
@@ -134,6 +139,8 @@ function [result] = ScrewInspection(imgpath, visualization)
       scatter(in_r(:,1), in_r(:,2), 'g','filled');
       scatter(out_l(:,1), out_l(:,2), 'r','filled');
       scatter(out_r(:,1), out_r(:,2), 'r','filled');
+      title(['Threads']);
+
     end
     % need to be improved\
 
@@ -178,6 +185,8 @@ function [result] = ScrewInspection(imgpath, visualization)
     for i = 1 : length(thread_r)
       plot([in_r(thread_r(i,1),1), out_r(thread_r(i,2),1)], [in_r(thread_r(i,1),2), out_r(thread_r(i,2),2)], 'LineWidth', 2);
     end
+    title(['Thread matches']);
+
 
   end
 

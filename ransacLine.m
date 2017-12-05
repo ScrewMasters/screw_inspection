@@ -3,7 +3,7 @@ function [best_inliers] = ransacLine(pts)
 N = size(pts,1);
 err = 2;
 best_num = 0;
-
+nIter = 20;
 % for i=1:nIter
 %     x1 = pts(i,1); y1 = pts(i,2);
 %
@@ -24,13 +24,14 @@ best_num = 0;
 % [~,index] = sort(d);
 % best_inliers = index(1:N);
 
-for i=1:20
+for i = 1 : nIter
     r = randperm(N,2);
-    x = pts(r,1);y = pts(r,2);
+    x = pts(r,1);
+    y = pts(r,2);
     c = pinv([x,ones(size(x))])*y;
     d = abs(c(1)*pts(:,1) -pts(:,2)+c(2))/sqrt(c(1)^2+1);
 
-    inliers = find(d<err);
+    inliers = find(d < err);
     num = numel(inliers);
 
     if best_num < num
